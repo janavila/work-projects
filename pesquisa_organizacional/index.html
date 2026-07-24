@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== CABEÇALHO ===================== -->
+  <header class="cabecalho">
+    <div class="cabecalho-esquerda">
+      <img src="assets/simbolo_bda.png" alt="Brasão da 3ª Brigada de Cavalaria Mecanizada" class="cabecalho-logo" id="logo-brasao" onerror="this.style.display='none'">
+      <div class="cabecalho-titulos">
+        <h1>Braço Forte, Abraço Amigo</h1>
+        <p>Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada</p>
+      </div>
+    </div>
+    <div class="cabecalho-direita">
+      <div class="popover-wrapper">
+        <button class="botao-cabecalho" id="btn-criterios" type="button">📊 Critérios</button>
+        <div class="popover" id="popover-criterios">
+          <p>Cada resposta vira um <strong>índice de 0 a 100</strong> (0 = pior, 100 = melhor). Itens de sentido invertido são revertidos antes do cálculo.</p>
+          <p>A agregação é por <strong>média simples, sem peso</strong>: item → subseção → seção → Índice Geral (Seções 1 a 5). A Seção 6 é uma nota de fechamento à parte, não entra nessa média.</p>
+          <p>Faixas de classificação:</p>
+          <ul class="popover-faixas">
+            <li><span class="marcador" style="background:#BF6A5D"></span>Ruim (0 a 49)</li>
+            <li><span class="marcador" style="background:#79D678"></span>Bom (50 a 74)</li>
+            <li><span class="marcador" style="background:#4CAF50"></span>Excelente (75 a 100)</li>
+          </ul>
+        </div>
+      </div>
+      <a class="botao-cabecalho" id="btn-formulario" href="data/formulario.pdf" download="Formulario_Pesquisa_Clima_3BdaCMec.pdf">📄 Baixar formulário</a>
+    </div>
+  </header>
+
+  <!-- ===================== PAINEL DE FILTROS ===================== -->
+  <div class="painel-filtros" id="painel-filtros">
+    <div class="filtros-linha">
+      <div class="filtro-campo">
+        <label for="filtro-om">Organização Militar</label>
+        <select id="filtro-om" multiple size="1"></select>
+      </div>
+      <div class="filtro-campo">
+        <label for="filtro-posto">Posto/Graduação</label>
+        <select id="filtro-posto" multiple size="1"></select>
+      </div>
+      <div class="filtro-campo">
+        <label for="filtro-vinculo">Vínculo</label>
+        <select id="filtro-vinculo" multiple size="1"></select>
+      </div>
+      <div class="filtro-campo">
+        <label for="filtro-escolaridade">Escolaridade</label>
+        <select id="filtro-escolaridade" multiple size="1"></select>
+      </div>
+    </div>
+    <div class="filtros-chips-linha">
+      <div class="chips" id="chips-container">
+        <span class="chips-vazio" id="chips-vazio">Nenhum filtro ativo — exibindo a Brigada inteira.</span>
+      </div>
+      <button class="botao-limpar" id="btn-limpar-filtros" type="button">Limpar tudo</button>
+    </div>
+  </div>
+
+  <!-- ===================== NAVEGAÇÃO POR ABAS ===================== -->
+  <nav class="abas-nav" id="abas-nav">
+    <button class="aba-btn ativa" data-aba="visao-geral" type="button">Visão Geral</button>
+    <button class="aba-btn" data-aba="por-secao" type="button">Por Seção</button>
+    <button class="aba-btn" data-aba="por-subsecao" type="button">Por Subseção</button>
+    <button class="aba-btn" data-aba="por-om" type="button">Por Organização Militar</button>
+    <button class="aba-btn" data-aba="qualitativas" type="button">Respostas Qualitativas</button>
+    <button class="aba-btn" data-aba="perfil" type="button">Perfil dos Respondentes</button>
+  </nav>
+
+  <!-- ===================== CONTEÚDO ===================== -->
+  <main class="conteudo" id="conteudo">
+    <div class="aba-painel ativa" id="aba-visao-geral"></div>
+    <div class="aba-painel" id="aba-por-secao"></div>
+    <div class="aba-painel" id="aba-por-subsecao"></div>
+    <div class="aba-painel" id="aba-por-om"></div>
+    <div class="aba-painel" id="aba-qualitativas"></div>
+    <div class="aba-painel" id="aba-perfil"></div>
+  </main>
+
+  <div class="carregando" id="tela-carregando">
+    <div class="spinner"></div>
+    <p>Carregando dados da pesquisa…</p>
+  </div>
+
+  <div class="tela-erro" id="tela-erro" style="display:none">
+    <div class="tela-erro-caixa">
+      <h2>Não foi possível carregar o dashboard</h2>
+      <p id="tela-erro-mensagem"></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== BIBLIOTECAS (vendor, servidas localmente) ===================== -->
+<script src="vendor/echarts.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="vendor/jspdf.plugin.autotable.min.js"></script>
+<script src="vendor/docx.umd.js"></script>
+<script src="vendor/filesaver.min.js"></script>
+
+<!-- ===================== MOTOR (camada de dados, sem DOM) ===================== -->
+<script src="js/csv-parser.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/dictionary.js"></script>
+<script src="js/format.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/interpretation.js"></script>
+
+<!-- ===================== APRESENTAÇÃO ===================== -->
+<script src="js/charts.js"></script>
+<script src="js/tabs/visao-geral.js"></script>
+<script src="js/tabs/por-secao.js"></script>
+<script src="js/tabs/por-subsecao.js"></script>
+<script src="js/tabs/por-om.js"></script>
+<script src="js/tabs/qualitativas.js"></script>
+<script src="js/tabs/perfil.js"></script>
+<script src="js/export.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+﻿coluna,secao,tipo,escala_dominio,descricao
+respondent_id,Metadados,Inteiro,-,"Identificador sequencial do respondente (não é o militar real, apenas a linha)."
+data_resposta,Metadados,Data (AAAA-MM-DD),-,Data simulada de preenchimento.
+om,Caracterização,Categórica,11 OM da 3ª Bda C Mec,Organização Militar do respondente.
+posto_graduacao,Caracterização,Categórica,14 postos/graduações específicos,"Do General ao Soldado (EV), sem agrupamento."
+vinculo,Caracterização,Categórica,De Carreira / Temporário,Tipo de vínculo com o Exército.
+escolaridade,Caracterização,Categórica,9 níveis,Maior formação concluída.
+s1_estado_civil,Seção 1,Categórica,4 opções,Estado civil / situação familiar.
+s1_familia_mesma_cidade,Seção 1,Categórica,3 opções,Se a família mora na mesma cidade.
+s1_q3_concilia_trabalho_familia,Seção 1 — Família,Escala,1 a 4 (Discordo totalmente → Concordo totalmente),Consegue equilibrar trabalho e família.
+s1_q4_familia_apoia,Seção 1 — Família,Escala,1 a 4,Família entende e apoia a profissão.
+s1_q5_cidade_boas_condicoes,Seção 1 — Família,Escala,1 a 4,Cidade oferece boas condições de vida.
+s1_ativ_fisica_freq_semana,Seção 1,Categórica,4 faixas,Quantas vezes por semana pratica atividade física.
+s1_q7_tempo_descanso,Seção 1 — Rotina,Escala,1 a 4,Tem tempo para descanso/lazer.
+s1_q8_dorme_bem,Seção 1 — Rotina,Escala,1 a 4,Dorme bem / acorda descansado.
+s1_q9_rotina_ativ_fisica_satisfatoria,Seção 1 — Rotina,Escala,1 a 4,Rotina de atividade física satisfatória.
+s1_nota_qualidade_vida,Seção 1 — Qualidade de vida,Nota,0 a 10,Nota geral de qualidade de vida (últimas 2–4 semanas).
+s1_nota_qualidade_vida_justificativa,Seção 1 — Qualidade de vida,Texto (obrigatório),-,Justificativa da nota de qualidade de vida.
+s1_nota_equilibrio_trabalho_vida,Seção 1 — Qualidade de vida,Nota,0 a 10,Nota de equilíbrio trabalho/vida pessoal.
+s1_nota_equilibrio_trabalho_vida_justificativa,Seção 1 — Qualidade de vida,Texto (obrigatório),-,Justificativa da nota de equilíbrio.
+s1_nota_bemestar_fisico,Seção 1 — Qualidade de vida,Nota,0 a 10,Nota de bem-estar físico.
+s1_nota_bemestar_fisico_justificativa,Seção 1 — Qualidade de vida,Texto (obrigatório),-,Justificativa da nota de bem-estar físico.
+s1_nota_bemestar_emocional,Seção 1 — Qualidade de vida,Nota,0 a 10,Nota de bem-estar emocional.
+s1_nota_bemestar_emocional_justificativa,Seção 1 — Qualidade de vida,Texto (obrigatório),-,Justificativa da nota de bem-estar emocional.
+s1_q14_fe_forca_equilibrio,Seção 1 — Espiritualidade,Escala,1 a 4,Fé/espiritualidade como fonte de força.
+s1_q15_vive_religiao_sem_constrangimento,Seção 1 — Espiritualidade,Escala,1 a 4,Vive a religião no trabalho sem constrangimento.
+s1_q16_om_respeita_liberdade_religiosa,Seção 1 — Espiritualidade,Escala,1 a 4,OM respeita liberdade religiosa.
+s1_comentario,Seção 1,Texto (obrigatório),-,Comentário livre sobre vida pessoal/familiar.
+s2_nota_sabor_rancho,Seção 2 — Rancho,Nota,0 a 10,"Nota para o sabor/tempero — ""Considerando o sabor e o tempero, qual é seu nível de satisfação com a comida servida no rancho?"""
+s2_nota_sabor_rancho_justificativa,Seção 2 — Rancho,Texto (obrigatório),-,Justificativa da nota de sabor.
+s2_nota_variedade_cardapio,Seção 2 — Rancho,Nota,0 a 10,Nota para variedade do cardápio.
+s2_nota_variedade_cardapio_justificativa,Seção 2 — Rancho,Texto (obrigatório),-,Justificativa da nota de variedade.
+s2_nota_quantidade_comida,Seção 2 — Rancho,Nota,0 a 10,Nota para quantidade de comida servida.
+s2_nota_quantidade_comida_justificativa,Seção 2 — Rancho,Texto (obrigatório),-,Justificativa da nota de quantidade.
+s2_nota_limpeza_rancho,Seção 2 — Rancho,Nota,0 a 10,Nota para limpeza/higiene do rancho.
+s2_nota_limpeza_rancho_justificativa,Seção 2 — Rancho,Texto (obrigatório),-,Justificativa da nota de limpeza.
+s2_q5_local_boas_condicoes,Seção 2 — Alojamento,Escala,1 a 4,Local de trabalho em boas condições.
+s2_q6_alojamento_limpo,Seção 2 — Alojamento,Escala,1 a 4,Alojamento limpo e organizado.
+s2_q7_alojamento_boas_condicoes,Seção 2 — Alojamento,Escala,1 a 4,Alojamento com boas condições de acomodação.
+s2_q8_banheiros_boas_condicoes,Seção 2 — Alojamento,Escala,1 a 4,Banheiros em boas condições.
+s2_q9_materiais_equipamentos,Seção 2 — Estrutura,Escala,1 a 4,Tem os materiais/equipamentos necessários.
+s2_q10_carga_trabalho_adequada,Seção 2 — Estrutura,Escala,1 a 4,Carga de trabalho compatível com tempo/efetivo.
+s2_q11_funcoes_claras,Seção 2 — Estrutura,Escala,1 a 4,Funções claras e bem definidas.
+s2_equipamentos_texto,Seção 2,Texto (aberto),-,Se o Exército fornece os equipamentos necessários (pergunta textual).
+s2_q13_superiores_reconhecem,Seção 2 — Liderança,Escala,1 a 4,Superiores reconhecem e valorizam o trabalho.
+s2_q14_bom_relacionamento_colegas,Seção 2 — Liderança,Escala,1 a 4,Bom relacionamento com colegas.
+s2_q15_superiores_orientam_apoiam,Seção 2 — Liderança,Escala,1 a 4,Superiores orientam e apoiam.
+s2_q16_oportunidades_cursos,Seção 2 — Carreira,Escala,1 a 4,Oportunidades de capacitação.
+s2_q17_chances_crescer_carreira,Seção 2 — Carreira,Escala,1 a 4,Chances reais de crescer na carreira.
+s2_nota_orgulho_om,Seção 2 — Carreira,Nota,0 a 10,Orgulho de pertencer à OM.
+s2_nota_orgulho_om_justificativa,Seção 2 — Carreira,Texto (obrigatório),-,Justificativa da nota de orgulho.
+s2_melhoria_texto,Seção 2,Texto (obrigatório),-,Principal ponto a melhorar nas condições de trabalho.
+s3_q1_energia_disposicao_freq,Seção 3 — Estado emocional,Frequência,1 a 5 (Nunca → Todo dia),Frequência de se sentir com energia/disposição.
+s3_q2_sobrecarregado_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de sobrecarga/pressão excessiva.
+s3_q3_dificuldade_relaxar_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de dificuldade para relaxar.
+s3_q4_dormiu_mal_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de sono ruim por preocupação.
+s3_q5_irritado_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de irritação/impaciência.
+s3_q6_lidou_bem_dificuldades_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de lidar bem com dificuldades.
+s3_q7_apoiado_colegas_chefes_freq,Seção 3 — Estado emocional,Frequência,1 a 5,Frequência de se sentir apoiado.
+s3_q8_sabe_recorrer_apoio,Seção 3 — Enfrentamento,Escala,1 a 4,Sabe a quem recorrer para apoio emocional.
+s3_q9_seguro_buscar_apoio_sem_discriminacao,Seção 3 — Enfrentamento,Escala,1 a 4,Sinto-me seguro para buscar apoio de ajuda psicológica sem sofrer discriminação. (redação atualizada)
+s3_q10_equilibrio_emocional_bom,Seção 3 — Enfrentamento,Escala,1 a 4,Equilíbrio emocional bom no momento.
+s3_fusex_usuario,Seção 3 — FUSEx,Categórica,Sim / Não,Indica se o respondente é contribuinte/usuário do FUSEx (define se respondeu ao bloco).
+s3_fusex_q11_atendimento_qualidade,Seção 3 — FUSEx,Escala (condicional),1 a 4 ou vazio,Qualidade do atendimento FUSEx. Vazio se não é usuário.
+s3_fusex_q12_atende_necessidades,Seção 3 — FUSEx,Escala (condicional),1 a 4 ou vazio,O FUSEx atende bem às minhas necessidades de saúde e da minha família. (redação atualizada)
+s3_fusex_q13_facilidade_uso,Seção 3 — FUSEx,Escala (condicional),1 a 4 ou vazio,Facilidade de uso do FUSEx. Vazio se não é usuário.
+s3_apostas_q14_costuma_apostar,Seção 3 — Apostas,Escala,1 a 4,Costuma apostar/jogar. ATENÇÃO: item de sentido invertido (concordar = pior).
+s3_apostas_q15_aumentou_freq_valor,Seção 3 — Apostas,Escala,1 a 4,Aumentou frequência/valor apostado. Invertido.
+s3_apostas_q16_prejuizo_financeiro,Seção 3 — Apostas,Escala,1 a 4,Já teve prejuízo financeiro com apostas. Invertido.
+s3_apostas_q17_afetou_trabalho,Seção 3 — Apostas,Escala,1 a 4,Apostas afetaram foco/rendimento/relações. Invertido.
+s3_apostas_q18_quis_parar_dificuldade,Seção 3 — Apostas,Escala,1 a 4,Quis parar e teve dificuldade. Invertido.
+s3_comentario,Seção 3,Texto (obrigatório),-,Comentário livre sobre bem-estar/apoio emocional.
+s4_moradia,Seção 4,Categórica,5 opções,Tipo de moradia atual.
+s4_deslocamento_tempo,Seção 4,Categórica,4 faixas,Tempo de deslocamento diário.
+s4_q3_soldo_compativel,Seção 4,Escala,1 a 4,Soldo compatível com responsabilidades.
+s4_q4_renda_suficiente,Seção 4,Escala,1 a 4,Renda suficiente para despesas do mês.
+s4_q5_consegue_guardar_dinheiro,Seção 4,Escala,1 a 4,Consegue guardar dinheiro com regularidade.
+s4_q6_moradia_adequada,Seção 4,Escala,1 a 4,Moradia adequada para família.
+s4_q7_deslocamento_razoavel,Seção 4,Escala,1 a 4,Tempo/custo do deslocamento razoáveis.
+s4_q8_seguranca_financeira_futuro,Seção 4,Escala,1 a 4,Segurança financeira para o futuro.
+s4_q9_financas_nao_afetam_desempenho,Seção 4,Escala,1 a 4,"Problemas financeiros NÃO afetam desempenho (item já positivo, não é invertido)."
+s4_nota_situacao_financeira,Seção 4,Nota,0 a 10,Nota geral para a situação financeira atual.
+s4_nota_situacao_financeira_justificativa,Seção 4,Texto (obrigatório),-,Justificativa da nota financeira.
+s4_avaliacao_geral_financeira,Seção 4,Categórica,4 opções,Autoavaliação geral da situação financeira.
+s4_comentario,Seção 4,Texto (obrigatório),-,Comentário livre sobre questão financeira.
+s5_q1_hierarquia_com_respeito,Seção 5 — Hierarquia,Escala,1 a 4,Hierarquia/disciplina aplicadas com respeito.
+s5_q2_tratamento_igualdade,Seção 5 — Hierarquia,Escala,1 a 4,Tratado com respeito e igualdade.
+s5_q3_regras_iguais_para_todos,Seção 5 — Hierarquia,Escala,1 a 4,Regras valem igual para todos.
+s5_q4_info_clara_a_tempo,Seção 5 — Comunicação,Escala,1 a 4,Informações claras e a tempo.
+s5_q5_avontade_falar_chefia,Seção 5 — Comunicação,Escala,1 a 4,À vontade para falar ideias/dúvidas.
+s5_q6_decisoes_explicadas_clareza,Seção 5 — Comunicação,Escala,1 a 4,Decisões explicadas com clareza.
+s5_q7_recebe_feedback,Seção 5 — Comunicação,Escala,1 a 4,Recebe retorno sobre desempenho.
+s5_q8_reunioes_objetivas,Seção 5 — Reuniões/Formaturas,Escala,1 a 4,As reuniões das quais participo são objetivas? (redação atualizada)
+s5_q9_tempo_reunioes_formaturas_ok,Seção 5 — Reuniões/Formaturas,Escala,1 a 4,Tempo de reuniões/formaturas não atrapalha tarefas.
+s5_q10_planejamento_com_antecedencia,Seção 5 — Escalas,Escala,1 a 4,Atividades planejadas com antecedência.
+s5_q11_escalas_justas,Seção 5 — Escalas,Escala,1 a 4,Escalas divididas de forma justa.
+s5_q12_avisado_mudancas_antecedencia,Seção 5 — Escalas,Escala,1 a 4,Avisado com antecedência de mudanças.
+s5_q13_rotina_previsivel,Seção 5 — Escalas,Escala,1 a 4,Rotina previsível o suficiente.
+s5_sugestao_texto,Seção 5,Texto (obrigatório),-,Sugestão para melhorar a comunicação interna.
+s6_nota_clima_geral,Seção 6,Nota,0 a 10,Nota geral de fechamento para o clima da OM.
+s6_nota_clima_geral_justificativa,Seção 6,Texto (obrigatório),-,Justificativa da nota geral de clima.
