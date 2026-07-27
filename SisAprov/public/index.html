@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SisAprov — Sistema de Aprovisionamento</title>
+<link rel="icon" type="image/webp" href="assets/simbolo_intendencia.webp">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <button class="app-header__menu-toggle" id="btnMenuToggle" aria-label="Abrir menu">&#9776;</button>
+  <div class="app-header__simbolo app-header__simbolo--esquerda">
+    <div class="app-header__icone-recorte">
+      <img src="assets/simbolo_intendencia.webp" alt="Símbolo da Intendência">
+    </div>
+  </div>
+  <div class="app-header__titulo-wrap">
+    <span class="app-header__titulo">Sistema de Aprovisionamento</span>
+    <span class="app-header__subtitulo">Sistema para controle de gestão orçamentária do setor de aprovisionamento do Cmdo 3ª Bda C Mec</span>
+  </div>
+  <div class="app-header__simbolo app-header__simbolo--direita">
+    <img src="assets/simbolo_bda.png" alt="Brasão da 3ª Bda C Mec" class="app-header__brasao">
+  </div>
+</header>
+
+<div class="app-body">
+  <div class="sidebar__overlay" id="sidebarOverlay"></div>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar__group">
+      <h3>Empenhos</h3>
+      <button class="sidebar__link" data-view="empenhos-adicionar">Adicionar Empenhos</button>
+      <button class="sidebar__link" data-view="empenhos-visualizar">Visualizar Empenhos</button>
+      <button class="sidebar__link" data-view="empenhos-anulacao">Adicionar Anulação</button>
+      <button class="sidebar__link" data-view="empenhos-acompanhamento">Acompanhamento</button>
+    </div>
+
+    <div class="sidebar__group">
+      <h3>Provisões / Recebimentos</h3>
+      <button class="sidebar__link" data-view="recebimentos-adicionar">Adicionar Recebimentos</button>
+      <button class="sidebar__link" data-view="recebimentos-visualizar">Visualizar Recebimentos</button>
+    </div>
+
+    <div class="sidebar__group">
+      <h3>Notas de Crédito</h3>
+      <button class="sidebar__link" data-view="nc-adicionar">Adicionar Nota de Crédito</button>
+      <button class="sidebar__link" data-view="nc-situacao">Situação Geral</button>
+    </div>
+
+    <div class="sidebar__group">
+      <h3>Comissão de Recebimento</h3>
+      <button class="sidebar__link" data-view="comissao-adicionar">Adicionar Comissão</button>
+      <button class="sidebar__link" data-view="comissao-visualizar">Visualizar Comissão</button>
+    </div>
+
+    <div class="sidebar__group">
+      <button class="sidebar__link sidebar__link--single" data-view="graficos">📊 Gráficos</button>
+    </div>
+
+    <a class="sidebar__caderno" href="assets/Caderno_Aprov.pdf" download>📘 Caderno de Orientações</a>
+    <a class="sidebar__caderno" href="assets/Tutorial_SisAprov.pdf" download>Tutorial - SisAprov ⚔️</a>
+  </nav>
+
+  <main class="conteudo" id="conteudo">
+    <div class="vazio">Carregando…</div>
+  </main>
+</div>
+
+<footer class="app-footer">
+  Desenvolvimento pelo Setor de Informática da 3ª Brigada de Cavalaria Mecanizada
+</footer>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/empenhos.js"></script>
+<script src="js/recebimentos.js"></script>
+<script src="js/notasCredito.js"></script>
+<script src="js/comissoes.js"></script>
+<script src="js/graficos.js"></script>
+<script>
+  SisAprov.iniciar();
+</script>
+</body>
+</html>
