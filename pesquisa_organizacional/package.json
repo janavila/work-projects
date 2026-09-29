@@ -1,0 +1,27 @@
+{
+  "name": "dashboard-clima-organizacional",
+  "version": "2.0.0",
+  "description": "Dashboard de Clima Organizacional da 3ª Bda C Mec — v2 com autenticação, permissões por OM e gestão de datasets.",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server/app.js",
+    "criar-admin": "node server/scripts/criar_admin.js",
+    "migrar-dataset-inicial": "node server/scripts/migrar_dataset_inicial.js",
+    "cadastrar-oms": "node server/scripts/cadastrar_oms.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mysql-session": "^3.0.3",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.24.4"
+  },
+  "overrides": {
+    "mysql2": "^3.24.4"
+  }
+}

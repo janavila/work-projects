@@ -169,11 +169,11 @@
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.setTextColor(28, 51, 30);
-    doc.text('Braço Forte, Abraço Amigo', textoX, y + 18);
+    doc.text('Clima Organizacional 3ª Bda C Mec', textoX, y + 18);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.setTextColor(51, 51, 51);
-    doc.text('Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada', textoX, y + 34);
+    doc.text('Dashboard de pesquisa de clima organizacional da 3ª Brigada de Cavalaria Mecanizada', textoX, y + 34);
     y += 60;
 
     doc.setFontSize(11);
@@ -317,8 +317,8 @@
       } catch (e) { /* ignora logo inválido */ }
     }
 
-    children.push(new Paragraph({ text: 'Braço Forte, Abraço Amigo', heading: HeadingLevel.HEADING1 }));
-    children.push(new Paragraph({ text: 'Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada' }));
+    children.push(new Paragraph({ text: 'Clima Organizacional 3ª Bda C Mec', heading: HeadingLevel.HEADING1 }));
+    children.push(new Paragraph({ text: 'Dashboard de pesquisa de clima organizacional da 3ª Brigada de Cavalaria Mecanizada' }));
     children.push(new Paragraph({ text: '' }));
     children.push(new Paragraph({ text: `Recorte: ${dados.cabecalho}` }));
     children.push(new Paragraph({ text: `Gerado em ${dados.geradoEm} — N = ${dados.nTotal} respondentes` }));

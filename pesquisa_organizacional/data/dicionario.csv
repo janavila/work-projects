@@ -1,6 +1,5 @@
 ﻿coluna,secao,tipo,escala_dominio,descricao
 respondent_id,Metadados,Inteiro,-,"Identificador sequencial do respondente (não é o militar real, apenas a linha)."
-data_resposta,Metadados,Data (AAAA-MM-DD),-,Data simulada de preenchimento.
 om,Caracterização,Categórica,11 OM da 3ª Bda C Mec,Organização Militar do respondente.
 posto_graduacao,Caracterização,Categórica,14 postos/graduações específicos,"Do General ao Soldado (EV), sem agrupamento."
 vinculo,Caracterização,Categórica,De Carreira / Temporário,Tipo de vínculo com o Exército.

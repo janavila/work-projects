@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão — Clima Organizacional 3ª Bda C Mec</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app-admin" style="visibility:hidden">
+
+  <!-- ===================== CABEÇALHO ===================== -->
+  <header class="cabecalho">
+    <div class="cabecalho-esquerda">
+      <img src="assets/simbolo_bda.png" alt="Brasão da 3ª Brigada de Cavalaria Mecanizada" class="cabecalho-logo" onerror="this.style.display='none'">
+      <div class="cabecalho-titulos">
+        <h1>Área de Gestão</h1>
+        <p>Contas, organizações militares e bases de dados — 3ª Brigada de Cavalaria Mecanizada</p>
+      </div>
+    </div>
+    <div class="cabecalho-direita">
+      <div class="usuario-area" id="usuario-area" style="display:none">
+        <span class="usuario-nome" id="usuario-nome" title="Usuário conectado"></span>
+        <a class="botao-cabecalho" href="index.html">📊 Ir para o dashboard</a>
+        <button class="botao-cabecalho" id="btn-sair" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== NAVEGAÇÃO ===================== -->
+  <nav class="abas-nav" id="abas-nav-admin">
+    <button class="aba-btn ativa" data-aba="usuarios" type="button">Usuários</button>
+    <button class="aba-btn" data-aba="oms" type="button">Organizações Militares</button>
+    <button class="aba-btn" data-aba="datasets" type="button">Bases de dados</button>
+  </nav>
+
+  <!-- ===================== CONTEÚDO ===================== -->
+  <main class="conteudo">
+    <div class="mensagem-global" id="mensagem-global" style="display:none" role="status"></div>
+
+    <div class="aba-painel ativa" id="aba-usuarios"></div>
+    <div class="aba-painel" id="aba-oms"></div>
+    <div class="aba-painel" id="aba-datasets"></div>
+  </main>
+
+</div>
+
+<div class="carregando" id="tela-carregando">
+  <div class="spinner"></div>
+  <p>Carregando área de gestão…</p>
+</div>
+
+<div class="tela-erro" id="tela-erro" style="display:none">
+  <div class="tela-erro-caixa">
+    <h2>Não foi possível abrir a área de gestão</h2>
+    <p id="tela-erro-mensagem"></p>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/format.js"></script>
+<script src="js/admin/comum.js"></script>
+<script src="js/admin/usuarios.js"></script>
+<script src="js/admin/oms.js"></script>
+<script src="js/admin/datasets.js"></script>
+<script src="js/admin/app-admin.js"></script>
+
+</body>
+</html>

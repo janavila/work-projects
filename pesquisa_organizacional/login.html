@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar — Clima Organizacional 3ª Bda C Mec</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="tela-login">
+  <form class="caixa-login" id="form-login" autocomplete="on">
+    <div class="caixa-login-cabecalho">
+      <img src="assets/simbolo_bda.png" alt="Brasão da 3ª Brigada de Cavalaria Mecanizada" class="caixa-login-logo" onerror="this.style.display='none'">
+      <h1>Clima Organizacional 3ª Bda C Mec</h1>
+      <p>Dashboard de pesquisa de clima organizacional<br>da 3ª Brigada de Cavalaria Mecanizada</p>
+    </div>
+
+    <div class="campo-login">
+      <label for="campo-nome-cadastro">Nome de cadastro</label>
+      <input type="text" id="campo-nome-cadastro" name="nomeCadastro" autocomplete="username"
+             autocapitalize="none" spellcheck="false" required autofocus>
+    </div>
+
+    <div class="campo-login">
+      <label for="campo-senha">Senha</label>
+      <input type="password" id="campo-senha" name="senha" autocomplete="current-password" required>
+    </div>
+
+    <div class="alerta alerta-erro" id="login-erro" style="display:none" role="alert"></div>
+
+    <button type="submit" class="botao-login" id="btn-entrar">Entrar</button>
+
+    <p class="login-rodape">
+      Acesso restrito. Em caso de dúvida ou perda de senha, procure o administrador do sistema —
+      não há recuperação automática de senha por e-mail.
+    </p>
+  </form>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/login.js"></script>
+
+</body>
+</html>

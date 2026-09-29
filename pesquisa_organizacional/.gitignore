@@ -1,0 +1,84 @@
+# ===========================================================================
+# Arquivos que NÃO vão para o repositório.
+#
+# Três motivos, nesta ordem de gravidade:
+#   1. segredo (senha, chave de sessão);
+#   2. DADO SENSÍVEL da pesquisa — respostas individuais sobre saúde emocional,
+#      apostas e situação financeira de militares identificáveis por OM e posto;
+#   3. lixo de máquina, editor e dependência reinstalável.
+# ===========================================================================
+
+# --- 1. SEGREDOS ----------------------------------------------------------
+# Senha do MySQL, chave de sessão e senha inicial do admin.
+# (.env.example, sem valores reais, É versionado de propósito.)
+.env
+.env.local
+.env.*.local
+.env.backup
+*.pem
+*.key
+
+# --- 2. DADO SENSÍVEL DA PESQUISA ----------------------------------------
+# Nunca versionar, nem em repositório privado: uma cópia no GitHub é uma cópia
+# fora da rede interna do quartel, que é o único lugar onde este dado deveria
+# existir.
+#
+# O padrão resultados* cobre também exportações futuras (resultados_2027.csv etc.)
+data/resultados*.csv
+data/meta.json
+data/datasets/
+data/formulario_cta.html
+
+# Exportações brutas da plataforma soltas na pasta data/ — trazem ID, nome e
+# registro de tempo do respondente.
+data/*.xlsx
+data/*.xls
+data/*_cta.*
+
+# Relatórios PDF/Word gerados pelo dashboard (contêm índices de um recorte real).
+relatorio_clima_*.pdf
+relatorio_clima_*.docx
+
+# Prints de tela de trabalho — costumam mostrar dado real por cima do ombro.
+data/*.png
+data/*.jpg
+data/*.jpeg
+
+# Dumps e backups do banco (a migration em server/migrations/*.sql continua
+# versionada — os padrões abaixo são específicos para não pegá-la).
+*.dump
+*.sql.gz
+dump*.sql
+backup*.sql
+*_backup.sql
+
+# --- 3. DEPENDÊNCIAS E LIXO ----------------------------------------------
+# Reinstalável com `npm install`. (vendor/ NÃO entra aqui: as bibliotecas do
+# navegador são versionadas de propósito, para o dashboard funcionar offline.)
+node_modules/
+.npm
+*.tgz
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Configuração local do Claude Code (permissões desta máquina, não do projeto)
+.claude/settings.local.json

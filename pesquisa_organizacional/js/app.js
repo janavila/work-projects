@@ -2,6 +2,18 @@
  * Orquestração geral da aplicação: carga de dados, estado de filtros,
  * navegação por abas e a checagem centralizada de anonimato de nível 1
  * (seção 5.4 da especificação — feita uma vez, antes de qualquer aba).
+ *
+ * MUDANÇAS DA v2 (seção 6 do documento v2_autenticacao_permissoes_datasets.md):
+ * - os dados não vêm mais de arquivo estático em /data, e sim da API autenticada
+ *   (/api/me, /api/datasets, /api/dados?dataset_id=X, /api/dicionario);
+ * - existe um seletor de base de dados (dataset) no painel de filtros;
+ * - as linhas são filtradas pelas OMs permitidas ao usuário logado ANTES de
+ *   chegarem ao Engine (decisão da seção 2.2: a filtragem por permissão acontece
+ *   no navegador, não no servidor);
+ * - qualquer 401 manda o usuário para login.html (tratado em js/api.js).
+ *
+ * O que NÃO mudou: o formato dos dados entregues ao Engine, às abas, aos
+ * gráficos e à exportação é exatamente o mesmo da v1 — muda só de onde o CSV vem.
  */
 (function (global) {
   'use strict';
@@ -30,6 +42,14 @@
     filtros: { om: [], posto_graduacao: [], vinculo: [], escolaridade: [] },
     domainValues: {},
     abaAtiva: 'visao-geral',
+
+    // --- estado novo da v2 ---
+    usuario: null,
+    // null = sem restrição (administrador vê todas as OMs);
+    // array de nomes = usuário comum, vê somente estas OMs.
+    omsPermitidas: null,
+    datasets: [],
+    datasetIdAtual: null,
   };
 
   function novoResultadoAtual() {
@@ -62,44 +82,163 @@
 
   global.App = App;
 
-  // ============================== CARGA DE DADOS ==============================
+  // ============================== USUÁRIO E PERMISSÕES ==============================
 
-  async function carregarArquivoTexto(nomeArquivo, caminho) {
-    let resp;
-    try {
-      resp = await fetch(caminho, { cache: 'no-store' });
-    } catch (e) {
-      throw new Error(`Arquivo ${nomeArquivo} não encontrado — coloque o arquivo em /data.`);
-    }
-    if (!resp.ok) {
-      throw new Error(`Arquivo ${nomeArquivo} não encontrado — coloque o arquivo em /data.`);
-    }
-    const text = await resp.text();
-    if (!text || text.trim().length === 0) {
-      throw new Error(`O arquivo ${nomeArquivo} está vazio.`);
-    }
-    return text;
+  /**
+   * Carrega quem está logado e quais OMs ele pode ver. Um 401 aqui já foi
+   * tratado por js/api.js (redireciona para login.html).
+   */
+  async function carregarUsuario() {
+    const usuario = await global.Api.get('/api/me');
+    App.usuario = usuario;
+    App.omsPermitidas = usuario.isAdmin ? null : usuario.oms.map((om) => om.nome);
   }
 
-  async function carregarDados() {
-    const dicText = await carregarArquivoTexto('dicionario.csv', 'data/dicionario.csv');
-    const resText = await carregarArquivoTexto('resultados.csv', 'data/resultados.csv');
+  function renderAreaUsuario() {
+    const area = document.getElementById('usuario-area');
+    const nome = document.getElementById('usuario-nome');
+    const botaoGestao = document.getElementById('btn-gestao');
+
+    nome.textContent = App.usuario.isAdmin
+      ? `${App.usuario.nome} (administrador)`
+      : App.usuario.nome;
+
+    // Esconder o botão é conveniência visual: quem manda é o requireAdmin do
+    // servidor, que recusa qualquer rota de gestão para conta comum.
+    botaoGestao.style.display = App.usuario.isAdmin ? '' : 'none';
+    area.style.display = '';
+
+    document.getElementById('btn-sair').addEventListener('click', async (evento) => {
+      const botao = evento.currentTarget;
+      botao.disabled = true;
+      try {
+        await global.Api.post('/api/logout');
+      } catch (e) {
+        // Mesmo se o logout falhar (sessão já expirada, servidor fora), o
+        // destino é o mesmo: a tela de login.
+      }
+      window.location.replace(global.Api.PAGINA_LOGIN);
+    });
+  }
+
+  /**
+   * Aplica a permissão por OM nas linhas recebidas do servidor, ANTES de
+   * qualquer cálculo (seção 2.2 do documento da v2).
+   *
+   * Consequência desejada: como os valores dos filtros são descobertos a partir
+   * das linhas, o dropdown de OM já nasce contendo só as OMs permitidas, e a aba
+   * "Por Organização Militar" compara somente essas — sem precisar de nenhuma
+   * alteração nas abas nem no Engine.
+   */
+  function filtrarLinhasPorPermissao(linhas) {
+    if (App.omsPermitidas === null) return linhas;
+    const permitidas = new Set(App.omsPermitidas);
+    return linhas.filter((linha) => permitidas.has(linha.om));
+  }
+
+  // ============================== CARGA DE DADOS ==============================
+
+  /** Busca a lista de datasets que o usuário pode abrir (alimenta o seletor). */
+  async function carregarListaDatasets() {
+    const resposta = await global.Api.get('/api/datasets');
+    App.datasets = (resposta && resposta.datasets) || [];
+  }
+
+  /**
+   * Carrega dicionário + respostas de um dataset e monta a estrutura do
+   * instrumento. Mesmas validações da v1 (dicionário vazio, nenhuma resposta,
+   * colunas faltando), agora com os textos apontando para a API.
+   */
+  async function carregarDados(datasetId) {
+    const dicText = await global.Api.buscarTexto('/api/dicionario');
+    const resText = await global.Api.buscarTexto(`/api/dados?dataset_id=${encodeURIComponent(datasetId)}`);
 
     const dictItems = global.Dictionary.parseDictionary(dicText);
-    if (dictItems.length === 0) throw new Error('O arquivo dicionario.csv está vazio.');
+    if (dictItems.length === 0) throw new Error('O dicionário de variáveis (dicionario.csv) está vazio.');
 
-    const { rows: allRows, headers: resHeaders } = global.CSVParser.parseCSV(resText);
-    if (allRows.length === 0) throw new Error('O arquivo resultados.csv não contém nenhuma resposta.');
+    const { rows: linhasBrutas, headers: resHeaders } = global.CSVParser.parseCSV(resText);
+    if (linhasBrutas.length === 0) throw new Error('A base de dados selecionada não contém nenhuma resposta.');
 
     const colunasEsperadas = dictItems.map((it) => it.coluna);
     const faltando = colunasEsperadas.filter((c) => !resHeaders.includes(c));
     if (faltando.length > 0) {
       const nomes = faltando.slice(0, 5).join(', ') + (faltando.length > 5 ? '…' : '');
-      throw new Error(`resultados.csv está sem ${faltando.length} coluna(s) esperada(s) pelo dicionário: ${nomes}.`);
+      throw new Error(`A base de dados selecionada está sem ${faltando.length} coluna(s) esperada(s) pelo dicionário: ${nomes}.`);
     }
 
     App.structure = global.Dictionary.buildStructure(dictItems);
-    App.allRows = allRows;
+    App.allRows = filtrarLinhasPorPermissao(linhasBrutas);
+    App.datasetIdAtual = Number(datasetId);
+  }
+
+  // ============================== SELETOR DE DATASET ==============================
+
+  function datasetAtual() {
+    return App.datasets.find((d) => d.id === App.datasetIdAtual) || null;
+  }
+
+  function popularSeletorDataset() {
+    const select = document.getElementById('seletor-dataset');
+    select.innerHTML = '';
+    App.datasets.forEach((dataset) => {
+      const opcao = document.createElement('option');
+      opcao.value = String(dataset.id);
+      opcao.textContent = dataset.rotulo;
+      opcao.selected = dataset.id === App.datasetIdAtual;
+      select.appendChild(opcao);
+    });
+
+    // Com uma única base cadastrada o seletor não tem função — fica visível,
+    // para o usuário saber qual base está vendo, mas desabilitado.
+    select.disabled = App.datasets.length <= 1;
+    select.addEventListener('change', () => trocarDataset(Number(select.value)));
+  }
+
+  function renderInfoDataset() {
+    const info = document.getElementById('dataset-info');
+    const dataset = datasetAtual();
+    if (!dataset) { info.textContent = ''; return; }
+
+    const partes = [];
+    if (dataset.totalRespondentes !== null && dataset.totalRespondentes !== undefined) {
+      partes.push(`${global.Format.formatInteiro(Number(dataset.totalRespondentes))} respondentes na base`);
+    }
+    if (App.omsPermitidas !== null) {
+      const total = App.omsPermitidas.length;
+      partes.push(`${total} ${total === 1 ? 'OM liberada' : 'OMs liberadas'} para seu usuário`);
+    }
+    info.textContent = partes.join(' · ');
+  }
+
+  /** Troca a base de dados exibida. Os filtros são zerados: cada base tem os seus valores. */
+  async function trocarDataset(novoId) {
+    if (!Number.isInteger(novoId) || novoId === App.datasetIdAtual) return;
+
+    const conteudo = document.getElementById('conteudo');
+    conteudo.classList.add('conteudo-carregando');
+
+    try {
+      await carregarDados(novoId);
+
+      if (App.allRows.length === 0) {
+        atualizarBadgePeriodo();
+        renderInfoDataset();
+        mostrarAvisoSemDados(mensagemSemLinhas());
+        return;
+      }
+
+      mostrarConteudo();
+      garantirListeners();
+      C.FILTROS_ORDEM.forEach((campo) => { App.filtros[campo] = []; });
+      popularFiltros();
+      atualizarBadgePeriodo();
+      renderInfoDataset();
+      recalcularTudo();
+    } catch (erro) {
+      mostrarErro(erro.mensagem || erro.message);
+    } finally {
+      conteudo.classList.remove('conteudo-carregando');
+    }
   }
 
   // ============================== FILTROS — UI ==============================
@@ -203,6 +342,22 @@
 
   // ============================== NAVEGAÇÃO POR ABAS ==============================
 
+  /**
+   * Liga os listeners de filtro e de aba uma única vez.
+   *
+   * Precisa ser idempotente e ser chamado ANTES de qualquer caminho de aviso:
+   * se a primeira base aberta não tiver nenhuma linha permitida, a tela entra no
+   * estado de aviso, e o usuário ainda pode trocar de base no seletor — sem isso,
+   * os filtros e as abas ficariam inertes depois dessa troca.
+   */
+  let listenersLigados = false;
+  function garantirListeners() {
+    if (listenersLigados) return;
+    attachFiltroListeners();
+    attachAbaListeners();
+    listenersLigados = true;
+  }
+
   function attachAbaListeners() {
     document.querySelectorAll('.aba-btn').forEach((btn) => {
       btn.addEventListener('click', () => trocarAba(btn.dataset.aba));
@@ -248,7 +403,32 @@
     renderAbaAtiva();
   }
 
-  // ============================== ERRO / CARREGANDO ==============================
+  // ============================== PERÍODO DE APURAÇÃO ==============================
+
+  /**
+   * Na v1 o período vinha de data/meta.json; na v2 ele é metadado do dataset
+   * selecionado e chega junto da lista de datasets (/api/datasets). Base sem
+   * período detectado simplesmente não mostra o badge, como antes.
+   */
+  function atualizarBadgePeriodo() {
+    const badge = document.getElementById('badge-periodo');
+    const texto = document.getElementById('badge-periodo-texto');
+    const dataset = datasetAtual();
+
+    if (!dataset || !dataset.periodoInicio || !dataset.periodoFim) {
+      badge.style.display = 'none';
+      return;
+    }
+
+    const inicio = global.Format.formatDataISO(dataset.periodoInicio);
+    const fim = global.Format.formatDataISO(dataset.periodoFim);
+    texto.textContent = inicio === fim
+      ? `Período de apuração: ${inicio}`
+      : `Período de apuração: ${inicio} a ${fim}`;
+    badge.style.display = '';
+  }
+
+  // ============================== ERRO / AVISO / CARREGANDO ==============================
 
   function mostrarErro(mensagem) {
     document.getElementById('tela-carregando').style.display = 'none';
@@ -263,20 +443,97 @@
     document.getElementById('app').style.visibility = 'visible';
   }
 
+  /**
+   * Caso previsto na seção 2.1 do documento da v2: usuário comum sem nenhuma OM
+   * liberada (ou com OMs que não aparecem em base nenhuma). "O dashboard carrega
+   * normalmente, mas exibe o aviso em vez de dado vazio ou erro genérico" — por
+   * isso o cabeçalho continua visível e só o miolo é substituído.
+   */
+  function mostrarAvisoSemDados(mensagem) {
+    mostrarApp();
+    document.getElementById('painel-filtros').style.display = 'none';
+    document.getElementById('abas-nav').style.display = 'none';
+    document.querySelectorAll('.aba-painel').forEach((painel) => { painel.classList.remove('ativa'); });
+
+    let aviso = document.getElementById('aviso-sem-dados');
+    if (!aviso) {
+      aviso = document.createElement('div');
+      aviso.id = 'aviso-sem-dados';
+      aviso.className = 'tela-anonimato';
+      document.getElementById('conteudo').appendChild(aviso);
+    }
+    aviso.innerHTML = '';
+    const caixa = document.createElement('div');
+    caixa.className = 'alerta alerta-aviso';
+    caixa.textContent = mensagem;
+    aviso.appendChild(caixa);
+    aviso.style.display = '';
+  }
+
+  /** Desfaz o estado de aviso, quando a troca de base volta a ter dado para mostrar. */
+  function mostrarConteudo() {
+    const aviso = document.getElementById('aviso-sem-dados');
+    if (aviso) aviso.style.display = 'none';
+    document.getElementById('painel-filtros').style.display = '';
+    document.getElementById('abas-nav').style.display = '';
+    document.querySelectorAll('.aba-painel').forEach((painel) => {
+      painel.classList.toggle('ativa', painel.id === `aba-${App.abaAtiva}`);
+    });
+  }
+
+  function mensagemSemLinhas() {
+    if (App.omsPermitidas !== null && App.omsPermitidas.length === 0) {
+      return 'Sem organizações liberadas para seu usuário. Procure o administrador do sistema para receber acesso às OMs que você precisa acompanhar.';
+    }
+    return 'Nenhuma resposta das organizações militares liberadas para seu usuário foi encontrada nesta base de dados. Escolha outra base ou procure o administrador.';
+  }
+
+  function mensagemSemDatasets() {
+    if (App.usuario.isAdmin) {
+      return 'Nenhuma base de dados cadastrada ainda. Vá em Gestão > Bases de dados e envie a planilha exportada do formulário.';
+    }
+    if (App.omsPermitidas.length === 0) {
+      return 'Sem organizações liberadas para seu usuário. Procure o administrador do sistema para receber acesso às OMs que você precisa acompanhar.';
+    }
+    return 'Nenhuma base de dados disponível para as organizações militares liberadas para seu usuário. Procure o administrador do sistema.';
+  }
+
   // ============================== INIT ==============================
 
   async function init() {
     document.getElementById('app').style.visibility = 'hidden';
     try {
-      await carregarDados();
+      await carregarUsuario();
+      renderAreaUsuario();
+      garantirListeners();
+
+      await carregarListaDatasets();
+      if (App.datasets.length === 0) {
+        mostrarAvisoSemDados(mensagemSemDatasets());
+        return;
+      }
+
+      // Sem persistência de seleção: abre sempre na base mais recente, que é a
+      // primeira da lista devolvida pelo servidor (ordenada por envio, desc).
+      await carregarDados(App.datasets[0].id);
+      popularSeletorDataset();
+      renderInfoDataset();
+
+      if (App.allRows.length === 0) {
+        atualizarBadgePeriodo();
+        mostrarAvisoSemDados(mensagemSemLinhas());
+        return;
+      }
+
       popularFiltros();
-      attachFiltroListeners();
-      attachAbaListeners();
       renderChips();
+      atualizarBadgePeriodo();
       mostrarApp();
       renderAbaAtiva();
     } catch (err) {
-      mostrarErro(err.message);
+      // Um 401 já redirecionou para login.html — não faz sentido pintar erro.
+      if (err && err.status === 401) return;
+      mostrarErro(err.mensagem || err.message);
     }
   }
 

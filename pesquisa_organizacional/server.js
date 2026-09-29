@@ -11,6 +11,36 @@
  * Acesso de outros computadores da rede: http://<IP-desta-máquina>:<porta>/
  */
 
+/*
+ * ============================ APOSENTADO NA v2 ============================
+ *
+ * Este servidor é da v1: ele serve a pasta data/ como arquivo estático e não
+ * tem login. Rodá-lo hoje anularia toda a autenticação da v2 — qualquer pessoa
+ * na rede voltaria a poder baixar data/resultados.csv digitando o caminho no
+ * navegador (a dívida nº 27 do SISTEMA_ATUAL.md).
+ *
+ * O servidor da v2 é server/app.js:   npm start
+ *
+ * O arquivo foi mantido como referência histórica. Para rodá-lo de propósito
+ * (por exemplo, para inspecionar o comportamento antigo numa máquina isolada,
+ * sem dado real), é preciso pedir explicitamente:
+ *
+ *   PERMITIR_SERVIDOR_V1_SEM_LOGIN=sim node server.js
+ * ==========================================================================
+ */
+if (process.env.PERMITIR_SERVIDOR_V1_SEM_LOGIN !== 'sim') {
+  console.error('');
+  console.error('Este é o servidor da v1, SEM AUTENTICAÇÃO, e ele expõe a pasta data/ inteira.');
+  console.error('Use o servidor da v2, que exige login:');
+  console.error('');
+  console.error('    npm start        (equivale a: node server/app.js)');
+  console.error('');
+  console.error('Se você realmente precisa do comportamento antigo, rode:');
+  console.error('    PERMITIR_SERVIDOR_V1_SEM_LOGIN=sim node server.js');
+  console.error('');
+  process.exit(1);
+}
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

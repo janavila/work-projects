@@ -1,5 +1,12 @@
 # Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada
 
+> **Este README descreve a v1 (aplicação estática, sem login).**
+> A partir da v2 o sistema tem servidor Express + MySQL, login obrigatório,
+> permissão por Organização Militar e upload de bases de dados pela interface.
+> Para instalar e operar a versão atual, use **[README_V2.md](README_V2.md)**.
+> As instruções de `node server.js` e de atualização manual de CSV abaixo
+> valem apenas como registro histórico — o `server.js` está travado na v2.
+
 Aplicação estática (HTML/CSS/JavaScript puro, sem framework, sem build) que lê
 `data/dicionario.csv` e `data/resultados.csv`, calcula os índices de favorabilidade
 e exibe o dashboard interativo descrito em `MIGRACAO_JS.md`.
@@ -27,9 +34,18 @@ js/
 vendor/               bibliotecas de terceiros baixadas localmente (ECharts,
                         jsPDF, docx.js, FileSaver) — a aplicação funciona 100%
                         offline, sem precisar de internet depois de instalada
+scripts/
+  preprocessar_resultados.js   converte a exportação bruta do formulário
+                                 (Google Forms/CTA) em data/resultados.csv
 data/
   dicionario.csv        dicionário de variáveis (não sensível)
-  resultados.csv          respostas brutas — DADO SENSÍVEL, nunca commitar/expor
+  resultados_cta.csv      exportação bruta do formulário — DADO SENSÍVEL
+                            (tem ID/nome/timestamp), nunca commitar/expor
+  resultados.csv          respostas já pré-processadas (o dashboard lê este
+                            arquivo) — DADO SENSÍVEL, nunca commitar/expor
+  meta.json                gerado junto com resultados.csv: período de
+                             apuração (data da 1ª e da última resposta) e
+                             total de respondentes — exibido no cabeçalho
   formulario.pdf            formulário em branco, disponível para download
 assets/
   simbolo_bda.png          (opcional) brasão da Brigada — se ausente, o
@@ -86,11 +102,35 @@ ser necessário liberar conexões de entrada nessa porta para a rede local.
 
 ## Atualizando os dados da pesquisa
 
-Basta substituir `data/resultados.csv` (e/ou `data/dicionario.csv`) pelo
-arquivo novo, mantendo o mesmo nome. Não é preciso reiniciar o servidor — cada
-navegador recarrega os dados direto do disco a cada vez que a página é aberta
-(o servidor envia `Cache-Control: no-store` para os arquivos de `data/`,
-então basta atualizar o arquivo no disco e pedir para os usuários darem F5).
+O dashboard lê `data/resultados.csv`, mas esse arquivo **não** é a exportação
+bruta do formulário — é o resultado de um pré-processamento. Para atualizar
+com uma nova rodada de respostas:
+
+1. Exporte as respostas do formulário (Google Forms/CTA) como CSV e salve em
+   `data/resultados_cta.csv` (mantendo esse nome, sobrescrevendo o anterior).
+2. Rode o script de pré-processamento:
+
+   ```bash
+   node scripts/preprocessar_resultados.js
+   ```
+
+   Ele lê `data/resultados_cta.csv`, descarta as colunas identificáveis ("ID
+   do usuário", "Nome de exibição do usuário", "Registro de Tempo"), converte
+   cada resposta para o formato codificado do dicionário (ex.: "3 - Concordo"
+   → `3`) e grava o resultado em `data/resultados.csv` — que é o arquivo que
+   o dashboard efetivamente carrega.
+3. Não é preciso reiniciar o servidor — cada navegador recarrega os dados
+   direto do disco a cada vez que a página é aberta (o servidor envia
+   `Cache-Control: no-store` para os arquivos de `data/`), então basta pedir
+   para os usuários darem F5.
+
+Se o formulário mudar (pergunta nova, removida ou reordenada), o script para
+com um erro explicando o que não bateu — nesse caso o mapeamento de colunas
+dentro de `scripts/preprocessar_resultados.js` (constante `MAPA_COLUNAS`)
+precisa ser revisado antes de rodar de novo.
+
+Se preferir, `data/dicionario.csv` também pode ser substituído diretamente
+(sem passar pelo script) — ele já vem no formato que o dashboard espera.
 
 ## Segurança do dado sensível
 
@@ -99,9 +139,15 @@ situação financeira. O dashboard nunca expõe essa tabela bruta em nenhuma
 tela — apenas os índices já agregados, respeitando sempre o limiar de
 anonimato de 5 respondentes (seção 3.7 de `MIGRACAO_JS.md`). Mesmo assim:
 
+- `resultados_cta.csv` (exportação bruta do formulário) é ainda mais sensível
+  que `resultados.csv`, pois inclui "ID do usuário", "Nome de exibição do
+  usuário" e "Registro de Tempo" — dados identificáveis que o script de
+  pré-processamento remove ao gerar `resultados.csv`. Trate os dois arquivos
+  com o mesmo cuidado.
 - Não hospede esta pasta em um servidor exposto à internet — é para uso
   **somente na rede interna**.
-- Não versione `data/resultados.csv` em nenhum sistema de controle de versão
+- Não versione `data/resultados.csv` nem `data/resultados_cta.csv` em nenhum
+  sistema de controle de versão
   público.
 
 ## Logo da Brigada (opcional)

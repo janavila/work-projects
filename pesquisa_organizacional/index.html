@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada</title>
+<title>Clima Organizacional 3ª Bda C Mec</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -15,11 +15,14 @@
     <div class="cabecalho-esquerda">
       <img src="assets/simbolo_bda.png" alt="Brasão da 3ª Brigada de Cavalaria Mecanizada" class="cabecalho-logo" id="logo-brasao" onerror="this.style.display='none'">
       <div class="cabecalho-titulos">
-        <h1>Braço Forte, Abraço Amigo</h1>
-        <p>Dashboard de Clima Organizacional — 3ª Brigada de Cavalaria Mecanizada</p>
+        <h1>Clima Organizacional 3ª Bda C Mec</h1>
+        <p>Dashboard de pesquisa de clima organizacional da 3ª Brigada de Cavalaria Mecanizada</p>
       </div>
     </div>
     <div class="cabecalho-direita">
+      <div class="badge-periodo" id="badge-periodo" title="Datas da primeira e da última resposta recebidas" style="display:none">
+        🗓️ <span id="badge-periodo-texto">Período de apuração: —</span>
+      </div>
       <div class="popover-wrapper">
         <button class="botao-cabecalho" id="btn-criterios" type="button">📊 Critérios</button>
         <div class="popover" id="popover-criterios">
@@ -33,12 +36,24 @@
           </ul>
         </div>
       </div>
-      <a class="botao-cabecalho" id="btn-formulario" href="data/formulario.pdf" download="Formulario_Pesquisa_Clima_3BdaCMec.pdf">📄 Baixar formulário</a>
+      <a class="botao-cabecalho" id="btn-formulario" href="/api/formulario">📄 Baixar formulário</a>
+      <div class="usuario-area" id="usuario-area" style="display:none">
+        <span class="usuario-nome" id="usuario-nome" title="Usuário conectado"></span>
+        <a class="botao-cabecalho" id="btn-gestao" href="admin.html" style="display:none">⚙️ Gestão</a>
+        <button class="botao-cabecalho" id="btn-sair" type="button">Sair</button>
+      </div>
     </div>
   </header>
 
   <!-- ===================== PAINEL DE FILTROS ===================== -->
   <div class="painel-filtros" id="painel-filtros">
+    <div class="linha-dataset" id="linha-dataset">
+      <div class="filtro-campo filtro-campo-dataset">
+        <label for="seletor-dataset">Base de dados (pesquisa aplicada)</label>
+        <select id="seletor-dataset"></select>
+      </div>
+      <div class="dataset-info" id="dataset-info"></div>
+    </div>
     <div class="filtros-linha">
       <div class="filtro-campo">
         <label for="filtro-om">Organização Militar</label>
@@ -105,6 +120,9 @@
 <script src="vendor/jspdf.plugin.autotable.min.js"></script>
 <script src="vendor/docx.umd.js"></script>
 <script src="vendor/filesaver.min.js"></script>
+
+<!-- ===================== ACESSO À API (autenticação e dados) ===================== -->
+<script src="js/api.js"></script>
 
 <!-- ===================== MOTOR (camada de dados, sem DOM) ===================== -->
 <script src="js/csv-parser.js"></script>

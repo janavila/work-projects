@@ -42,16 +42,23 @@
 
   const SECOES_EXCLUIDAS_DO_INDICE = new Set(['Metadados', 'Caracterização', 'Seção 6']);
 
+  // Formulário atual agrupa posto/graduação em 7 faixas (em vez das 14
+  // específicas do formulário anterior) — ordem de hierarquia, do mais alto ao mais baixo.
   const ORDEM_POSTO = [
-    'General', 'Coronel', 'Tenente-Coronel', 'Major', 'Capitão', '1º Tenente',
-    '2º Tenente', 'Subtenente', '1º Sargento', '2º Sargento', '3º Sargento', 'Cabo',
-    'Soldado (Efetivo Profissional – EP)', 'Soldado (Efetivo Variável – EV / Recruta)',
+    'Oficial Superior (Cel / Ten Cel / Maj)',
+    'Oficial Intermediário / Subalterno (Cap / 1º Ten / 2º Ten)',
+    'Praça Estabilizada (Subtenente / Sargento de Carreira)',
+    'Sargento Temporário',
+    'Cabo',
+    'Soldado (Efetivo Profissional – EP)',
+    'Soldado Recruta (Efetivo Variável – EV)',
   ];
 
   const ORDEM_ESCOLARIDADE = [
-    'Ensino Fundamental Completo', 'Ensino Médio Incompleto',
+    'Ensino Fundamental Incompleto', 'Ensino Fundamental Completo', 'Ensino Médio Incompleto',
     'Ensino Médio Completo / Técnico', 'Ensino Superior Incompleto (faculdade em andamento)',
-    'Ensino Superior Completo (Graduação)', 'Pós-Graduação / Especialização', 'Mestrado', 'Doutorado',
+    'Ensino Superior Completo (Graduação)', 'Pós-Graduação / Especialização (Lato Sensu)',
+    'Mestrado (Stricto Sensu)', 'Doutorado',
   ];
 
   const METADADOS_SECAO = {
